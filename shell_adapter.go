@@ -1,19 +1,18 @@
-package adapter
+package gilibot
 
 import (
 	"bufio"
 	"fmt"
-	"github.com/alexandrebodin/gilibot"
 	"os"
 	"strings"
 )
 
 type shellAdapter struct {
-	bot     *gilibot.Bot
+	bot     *Bot
 	history []string
 }
 
-func NewShellAdapter(b *gilibot.Bot) *shellAdapter {
+func NewShellAdapter(b *Bot) *shellAdapter {
 	return &shellAdapter{bot: b}
 }
 

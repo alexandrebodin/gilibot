@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/alexandrebodin/gilibot"
-	"github.com/alexandrebodin/gilibot/adapter"
 	"github.com/alexandrebodin/gilibot/listener"
 )
 
 func main() {
 
 	bot := gilibot.New()
-
-	bot.SetAdapter(adapter.NewShellAdapter(bot))
 
 	bot.ListenFunc(".*", func(c *gilibot.Context) {
 
