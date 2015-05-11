@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	bot := gilibot.New()
+	bot := gilibot.New("slack")
 
 	bot.ListenFunc(".*", func(c *gilibot.Context) {
 

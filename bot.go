@@ -48,6 +48,8 @@ func (b *Bot) initAdapter(adapterName string) error {
 	switch adapterName {
 	case "shell":
 		b.Adapter = NewShellAdapter(b)
+	case "slack":
+		b.Adapter = NewSlackAdapter(b)
 	default:
 		return errInvalidAdapter
 	}
