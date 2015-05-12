@@ -14,17 +14,13 @@ func NewSlackAdapter(b *Bot) *slackAdapter {
 	return &slackAdapter{bot: b}
 }
 
-type slackHandler struct{}
+type slackHandler struct {
+	bot *Bot
+}
 
 func (h *slackHandler) OnMessage(c *slack.SlackContext, m *slack.MessageType) error {
 
-	r := slack.ResponseMessage{
-		Id:      "1",
-		Type:    "message",
-		Text:    "Coucou les copains",
-		Channel: m.Channel,
-	}
-	c.Client.WriteMessage(r)
+	h.bot.ReceiveMessage(m.Text)
 	return nil
 }
 
@@ -40,7 +36,7 @@ func (s *slackAdapter) Start() error {
 		return err
 	}
 
-	h := &slackHandler{}
+	h := &slackHandler{bot: s.bot}
 	slackClient.AddListener(slack.MessageEvent, h)
 
 	err = slackClient.Run()
