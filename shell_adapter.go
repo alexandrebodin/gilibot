@@ -2,7 +2,6 @@ package gilibot
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -21,7 +20,7 @@ func (s *shellAdapter) Start() error {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		fmt.Fprint(os.Stdout, s.bot.Name+" > ")
+		os.Stdout.WriteString(s.bot.Name + " > ")
 		scanner.Scan()
 
 		line := scanner.Text()
@@ -31,7 +30,7 @@ func (s *shellAdapter) Start() error {
 		s.history = append(s.history, line)
 
 		if line == "quit" || line == "q" || line == "exit" {
-			fmt.Fprintln(os.Stdout, "GoodBye!")
+			os.Stdout.WriteString("GoodBye!")
 			return nil
 		}
 
@@ -42,7 +41,7 @@ func (s *shellAdapter) Start() error {
 
 		if line == "history" || line == "h" || line == "hist" {
 			for _, line := range s.history {
-				fmt.Fprintln(os.Stdout, line)
+				os.Stdout.WriteString(line)
 			}
 			continue
 		}
@@ -53,4 +52,11 @@ func (s *shellAdapter) Start() error {
 		return err
 	}
 	return nil
+}
+
+func (s *shellAdapter) Reply(e *Envelope, messages []string) {
+
+	for m, _ := range messages {
+		os.Stdout.WriteString(m)
+	}
 }

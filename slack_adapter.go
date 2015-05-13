@@ -46,3 +46,7 @@ func (s *slackAdapter) Start() error {
 
 	return nil
 }
+
+func (s *slackAdapter) Reply() error {
+
+}

@@ -79,3 +79,7 @@ func (b *Bot) RegisterListener(l ListenerInterface) {
 func (b *Bot) ReceiveMessage(message string) {
 	b.matcher.HandleMessage(message)
 }
+
+func (b *Bot) Reply(e *Envelope, messages []string) {
+	b.Adapter.Reply(e, messsages)
+}
