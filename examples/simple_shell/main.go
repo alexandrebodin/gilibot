@@ -3,18 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/alexandrebodin/gilibot"
-	"github.com/alexandrebodin/gilibot/listener"
+	"time"
 )
 
 func main() {
 
 	bot := gilibot.New("slack")
 
-	bot.ListenFunc(".*", func(c *gilibot.Context) {
-		c.Reply([]string{"coucou match everything"})
+	bot.ListenFunc("!time", func(c *gilibot.Context) {
+		layout := "Mon Jan 2 2006 15:04:05"
+		t := time.Now()
+		c.Reply([]string{t.Format(layout)})
 	})
-
-	bot.RegisterListener(listener.NewTestListener())
 
 	err := bot.Start()
 	if err != nil {
