@@ -7,7 +7,8 @@ import (
 )
 
 type slackAdapter struct {
-	bot *Bot
+	bot    *Bot
+	client *slack.SlackClient
 }
 
 func NewSlackAdapter(b *Bot) *slackAdapter {
@@ -20,7 +21,12 @@ type slackHandler struct {
 
 func (h *slackHandler) OnMessage(c *slack.SlackContext, m *slack.MessageType) error {
 
-	h.bot.ReceiveMessage(m.Text)
+	msg := &Message{
+		Channel: m.Channel,
+		User:    m.User,
+		Text:    m.Text,
+	}
+	h.bot.ReceiveMessage(msg)
 	return nil
 }
 
@@ -36,6 +42,8 @@ func (s *slackAdapter) Start() error {
 		return err
 	}
 
+	s.client = slackClient
+
 	h := &slackHandler{bot: s.bot}
 	slackClient.AddListener(slack.MessageEvent, h)
 
@@ -47,6 +55,20 @@ func (s *slackAdapter) Start() error {
 	return nil
 }
 
-func (s *slackAdapter) Reply() error {
+func (s *slackAdapter) Reply(msg MessageInterface, messages []string) error {
 
+	resp := slack.ResponseMessage{
+		Id:      "1",
+		Type:    "message",
+		Channel: msg.getChannel(),
+	}
+	for _, m := range messages {
+		resp.Text = m
+		err := s.client.WriteMessage(resp)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

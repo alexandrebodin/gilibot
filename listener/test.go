@@ -1,7 +1,6 @@
 package listener
 
 import (
-	"fmt"
 	"github.com/alexandrebodin/gilibot"
 )
 
@@ -19,13 +18,13 @@ func (t *testListener) GetHandlers() []*gilibot.ListenerHandler {
 		{
 			Regex: "mon test",
 			HandlerFunc: func(c *gilibot.Context) {
-				fmt.Println("matched \"mon test\"")
+				c.Reply([]string{"matched \"mon test\""})
 			},
 		},
 		{
 			Regex: "merci (.*)",
 			HandlerFunc: func(c *gilibot.Context) {
-				fmt.Println(c.Matches[1])
+				c.Reply([]string{c.Matches[1]})
 			},
 		},
 	}

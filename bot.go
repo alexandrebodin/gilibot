@@ -36,6 +36,7 @@ func New(arguments ...string) *Bot {
 		listeners: []ListenerInterface{},
 		matcher:   &Matcher{},
 	}
+	b.matcher.Bot = b
 
 	err := b.initAdapter(adapterName)
 	if err != nil {
@@ -76,10 +77,11 @@ func (b *Bot) RegisterListener(l ListenerInterface) {
 	}
 }
 
-func (b *Bot) ReceiveMessage(message string) {
+func (b *Bot) ReceiveMessage(message MessageInterface) {
 	b.matcher.HandleMessage(message)
 }
 
-func (b *Bot) Reply(e *Envelope, messages []string) {
-	b.Adapter.Reply(e, messsages)
+func (b *Bot) Reply(m MessageInterface, messages []string) {
+
+	b.Adapter.Reply(m, messages)
 }

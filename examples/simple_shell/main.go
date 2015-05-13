@@ -11,9 +11,7 @@ func main() {
 	bot := gilibot.New("slack")
 
 	bot.ListenFunc(".*", func(c *gilibot.Context) {
-
-		fmt.Println(c.Matches)
-		fmt.Println("coucou match everything")
+		c.Reply([]string{"coucou match everything"})
 	})
 
 	bot.RegisterListener(listener.NewTestListener())

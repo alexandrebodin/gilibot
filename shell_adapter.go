@@ -46,7 +46,8 @@ func (s *shellAdapter) Start() error {
 			continue
 		}
 
-		s.bot.ReceiveMessage(line)
+		v := &Message{Text: line}
+		s.bot.ReceiveMessage(v)
 	}
 	if err := scanner.Err(); err != nil {
 		return err
@@ -54,9 +55,10 @@ func (s *shellAdapter) Start() error {
 	return nil
 }
 
-func (s *shellAdapter) Reply(e *Envelope, messages []string) {
+func (s *shellAdapter) Reply(msg MessageInterface, messages []string) error {
 
-	for m, _ := range messages {
-		os.Stdout.WriteString(m)
+	for _, m := range messages {
+		os.Stdout.WriteString(m + "\n")
 	}
+	return nil
 }
