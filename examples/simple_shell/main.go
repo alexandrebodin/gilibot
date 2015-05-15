@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"github.com/alexandrebodin/gilibot"
+	"log"
 	"time"
 )
 
@@ -18,6 +18,6 @@ func main() {
 
 	err := bot.Start()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 }
