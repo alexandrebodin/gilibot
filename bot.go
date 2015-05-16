@@ -3,6 +3,7 @@ package gilibot
 import (
 	"errors"
 	"log"
+	"regexp"
 )
 
 type Bot struct {
@@ -67,13 +68,16 @@ func (b *Bot) Start() error {
 }
 
 func (b *Bot) ListenFunc(regex string, handler ListenerFunc) {
-	b.matcher.AddHandler(&ListenerHandler{regex, handler})
+
+	regexp := regexp.MustCompile(regex)
+	b.matcher.AddHandler(&Listener{regexp, handler})
 }
 
 func (b *Bot) RegisterListener(l ListenerInterface) {
 	handlers := l.GetHandlers()
 	for _, handler := range handlers {
-		b.matcher.AddHandler(handler)
+		regexp := regexp.MustCompile(handler.Regex)
+		b.matcher.AddHandler(&Listener{regexp, handler.HandlerFunc})
 	}
 }
 

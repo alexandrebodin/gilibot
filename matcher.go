@@ -1,21 +1,18 @@
 package gilibot
 
-import "regexp"
-
 type Matcher struct {
 	Bot      *Bot
-	handlers []*ListenerHandler
+	handlers []*Listener
 }
 
-func (m *Matcher) AddHandler(l *ListenerHandler) {
+func (m *Matcher) AddHandler(l *Listener) {
 	m.handlers = append(m.handlers, l)
 }
 
 func (m *Matcher) HandleMessage(message MessageInterface) {
-	for _, h := range m.handlers {
 
-		re := regexp.MustCompile(h.Regex)
-		matches := re.FindStringSubmatch(message.getText())
+	for _, h := range m.handlers {
+		matches := h.Regex.FindStringSubmatch(message.getText())
 
 		if len(matches) > 0 {
 			c := &Context{
