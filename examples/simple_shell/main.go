@@ -13,7 +13,7 @@ func main() {
 	bot.ListenFunc("!time", func(c *gilibot.Context) {
 		layout := "Mon Jan 2 2006 15:04:05"
 		t := time.Now()
-		c.Reply([]string{t.Format(layout)})
+		c.Reply([]string{"Time : \n" + t.Format(layout)})
 	})
 
 	err := bot.Start()
