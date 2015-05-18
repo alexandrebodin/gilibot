@@ -46,7 +46,7 @@ func (s *shellAdapter) Start() error {
 			continue
 		}
 
-		v := &Message{Text: line}
+		v := &Message{text: line}
 		s.bot.ReceiveMessage(v)
 	}
 	if err := scanner.Err(); err != nil {

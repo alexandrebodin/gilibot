@@ -12,7 +12,7 @@ func (m *Matcher) AddHandler(l *Listener) {
 func (m *Matcher) HandleMessage(message MessageInterface) {
 
 	for _, h := range m.handlers {
-		matches := h.Regex.FindStringSubmatch(message.getText())
+		matches := h.Regex.FindStringSubmatch(message.Text())
 
 		if len(matches) > 0 {
 			c := &Context{
@@ -36,41 +36,25 @@ func (c *Context) Reply(messages []string) {
 }
 
 type MessageInterface interface {
-	getText() string
-	getChannel() string
-	getUser() string
+	Text() string
+	Channel() string
+	User() string
 }
 
 type Message struct {
-	Channel string
-	User    string
-	Text    string
+	channel string
+	user    string
+	text    string
 }
 
-func (m *Message) getText() string {
-	return m.Text
+func (m *Message) Text() string {
+	return m.text
 }
 
-func (m *Message) getUser() string {
-	return m.User
+func (m *Message) User() string {
+	return m.user
 }
 
-func (m *Message) getChannel() string {
-	return m.Channel
-}
-
-type TestMessage struct {
-	Message
-}
-
-func (m *TestMessage) getText() string {
-	return m.Text
-}
-
-func (m *TestMessage) getUser() string {
-	return m.User
-}
-
-func (m *TestMessage) getChannel() string {
-	return m.Channel
+func (m *Message) Channel() string {
+	return m.channel
 }
