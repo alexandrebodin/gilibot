@@ -1,7 +1,6 @@
 package listeners
 
 import (
-	"fmt"
 	"github.com/alexandrebodin/gilibot"
 	"net/http"
 	"regexp"
@@ -19,7 +18,7 @@ func NewJenkinsListener(baseUri string, username string, apiToken string) *Jenki
 		BaseUri:   baseUri,
 		username:  username,
 		apiToken:  apiToken,
-		uriSuffix: "api/json",
+		uriSuffix: "/api/json",
 	}
 }
 
@@ -34,7 +33,7 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 				jobName := c.Matches[1]
 				buildParameters := regexp.MustCompile("([a-zA-Z.]*=[a-zA-Z.]*)").FindAllString(c.Matches[0], -1)
 
-				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters/" + jenkins.uriSuffix
+				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix
 				if len(buildParameters) > 0 {
 					url += "?"
 				}
@@ -42,8 +41,6 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 				for _, p := range buildParameters {
 					url += p + "&"
 				}
-
-				fmt.Println(url)
 
 				req, err := http.NewRequest("POST", url, nil)
 				if err != nil {
