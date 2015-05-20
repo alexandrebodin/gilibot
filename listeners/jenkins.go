@@ -3,6 +3,7 @@ package listeners
 import (
 	"github.com/alexandrebodin/gilibot"
 	"net/http"
+	"strings"
 )
 
 type JenkinsListener struct {
@@ -48,19 +49,19 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 
 				//get parameters if any
 				jobName := c.Matches[1]
-				buildParameters := c.Matches[2]
+				buildParameters := strings.TrimSpace(c.Matches[2])
 				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix + "?" + buildParameters
 
 				req, err := http.NewRequest("POST", url, nil)
 				if err != nil {
-					c.Reply("Deploy error")
+					c.Reply("Deployment error")
 					return
 				}
 
 				req.SetBasicAuth(jenkins.username, jenkins.apiToken)
 				resp, err := http.DefaultClient.Do(req)
 				if err != nil {
-					c.Reply("Deploy error")
+					c.Reply("Deployment error")
 					return
 				}
 				defer resp.Body.Close()
@@ -68,6 +69,8 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 				if resp.StatusCode == 201 {
 					c.Reply("Deploy launched")
 					return
+				} else {
+					c.Reply("Deployment error")
 				}
 			},
 		},

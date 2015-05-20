@@ -4,6 +4,7 @@ import (
 	slack "github.com/alexandrebodin/slack_rtm"
 	"log"
 	"os"
+	"strings"
 )
 
 type slackAdapter struct {
@@ -24,7 +25,7 @@ func (h *slackHandler) OnMessage(c *slack.SlackContext, m *slack.MessageType) er
 	msg := &Message{
 		channel: m.Channel,
 		user:    m.User,
-		text:    m.Text,
+		text:    strings.Replace(m.Text, "&amp;", "&", -1),
 	}
 	h.bot.ReceiveMessage(msg)
 	return nil
