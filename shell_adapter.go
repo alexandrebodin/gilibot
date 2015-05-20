@@ -55,10 +55,8 @@ func (s *shellAdapter) Start() error {
 	return nil
 }
 
-func (s *shellAdapter) Reply(msg MessageInterface, messages []string) error {
+func (s *shellAdapter) Reply(msg MessageInterface, message string) error {
 
-	for _, m := range messages {
-		os.Stdout.WriteString(m + "\n")
-	}
+	os.Stdout.WriteString(message + "\n")
 	return nil
 }

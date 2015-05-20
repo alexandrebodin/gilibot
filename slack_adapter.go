@@ -55,19 +55,18 @@ func (s *slackAdapter) Start() error {
 	return nil
 }
 
-func (s *slackAdapter) Reply(msg MessageInterface, messages []string) error {
+func (s *slackAdapter) Reply(msg MessageInterface, message string) error {
 
 	resp := slack.ResponseMessage{
 		Id:      "1",
 		Type:    "message",
+		Text:    ">>>" + message,
 		Channel: msg.Channel(),
 	}
-	for _, m := range messages {
-		resp.Text = m
-		err := s.client.WriteMessage(resp)
-		if err != nil {
-			return err
-		}
+
+	err := s.client.WriteMessage(resp)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -3,7 +3,6 @@ package listeners
 import (
 	"github.com/alexandrebodin/gilibot"
 	"net/http"
-	"regexp"
 )
 
 type JenkinsListener struct {
@@ -12,6 +11,18 @@ type JenkinsListener struct {
 	username  string
 	apiToken  string
 }
+
+var jenkinsHelp = `Usage:
+
+	jenkins command[,] [arguments]
+
+The commands are:
+
+    build       start a jenkins build
+    b           alias for build
+
+Use "jenkins help [command]" for more information about a command.
+`
 
 func NewJenkinsListener(baseUri string, username string, apiToken string) *JenkinsListener {
 	return &JenkinsListener{
@@ -26,46 +37,38 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 
 	return []*gilibot.ListenerHandler{
 		{
-			Regex: "jenkins build ([a-zA-Z.]*) .*",
+			Regex: `j(?:enkins)? help\s*(.*)?`,
+			HandlerFunc: func(c *gilibot.Context) {
+				c.Reply(jenkinsHelp)
+			},
+		},
+		{
+			Regex: `j(?:enkins)? build ([\w\.\-_ ]+),\s*(.+)?`,
 			HandlerFunc: func(c *gilibot.Context) {
 
 				//get parameters if any
 				jobName := c.Matches[1]
-				buildParameters := regexp.MustCompile("([a-zA-Z.]*=[a-zA-Z.]*)").FindAllString(c.Matches[0], -1)
-
-				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix
-				if len(buildParameters) > 0 {
-					url += "?"
-				}
-
-				for _, p := range buildParameters {
-					url += p + "&"
-				}
+				buildParameters := c.Matches[2]
+				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix + "?" + buildParameters
 
 				req, err := http.NewRequest("POST", url, nil)
 				if err != nil {
-					c.Reply([]string{"Deploy error"})
+					c.Reply("Deploy error")
 					return
 				}
 
 				req.SetBasicAuth(jenkins.username, jenkins.apiToken)
 				resp, err := http.DefaultClient.Do(req)
 				if err != nil {
-					c.Reply([]string{"Deploy error"})
+					c.Reply("Deploy error")
 					return
 				}
 				defer resp.Body.Close()
 
 				if resp.StatusCode == 201 {
-					c.Reply([]string{"Deploy launched"})
+					c.Reply("Deploy launched")
 					return
 				}
-			},
-		},
-		{
-			Regex: "merci (.*)",
-			HandlerFunc: func(c *gilibot.Context) {
-				c.Reply([]string{c.Matches[1]})
 			},
 		},
 	}

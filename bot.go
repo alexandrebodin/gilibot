@@ -85,7 +85,7 @@ func (b *Bot) ReceiveMessage(message MessageInterface) {
 	b.matcher.HandleMessage(message)
 }
 
-func (b *Bot) Reply(m MessageInterface, messages []string) {
+func (b *Bot) Reply(m MessageInterface, message string) {
 
-	b.Adapter.Reply(m, messages)
+	b.Adapter.Reply(m, message)
 }

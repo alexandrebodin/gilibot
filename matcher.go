@@ -31,8 +31,8 @@ type Context struct {
 	Bot     *Bot
 }
 
-func (c *Context) Reply(messages []string) {
-	c.Bot.Reply(c.Message, messages)
+func (c *Context) Reply(message string) {
+	c.Bot.Reply(c.Message, message)
 }
 
 type MessageInterface interface {
