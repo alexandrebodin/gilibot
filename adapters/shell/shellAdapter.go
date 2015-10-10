@@ -2,20 +2,23 @@ package shell
 
 import (
 	"bufio"
-	"os"
-	"strings"
-	"strconv"
 	"fmt"
-    "github.com/alexandrebodin/gilibot"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/alexandrebodin/gilibot"
 )
 
+// A simple history structure
 type shellHistory struct {
-	list []string
+	list         []string
 	currentIndex int
-	maxLen int
+	maxLen       int
 }
 
-type shellAdapter struct {
+// Adapter defines an bot adapter to send command from the shell
+type Adapter struct {
 	bot     *gilibot.Bot
 	history *shellHistory
 }
@@ -29,20 +32,22 @@ func (h *shellHistory) Add(line string) {
 	}
 }
 
-func New(b *gilibot.Bot) *shellAdapter {
+// New returns a new shellAdapter
+func New(b *gilibot.Bot) *Adapter {
 
 	maxLen := 10000
-	return &shellAdapter{
+	return &Adapter{
 		bot: b,
 		history: &shellHistory{
-			list: make([]string, maxLen),
+			list:         make([]string, maxLen),
 			currentIndex: 0,
-			maxLen: maxLen,
+			maxLen:       maxLen,
 		},
 	}
 }
 
-func (s *shellAdapter) Start() error {
+// Start starts the adapter
+func (s *Adapter) Start() error {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -69,7 +74,7 @@ func (s *shellAdapter) Start() error {
 		if line == "history" || line == "h" || line == "hist" {
 
 			for index, line := range s.history.list {
-				fmt.Fprintf(os.Stdout, "%4s %v\n", strconv.Itoa(index + 1), line)
+				fmt.Fprintf(os.Stdout, "%4s %v\n", strconv.Itoa(index+1), line)
 			}
 
 			continue
@@ -80,7 +85,8 @@ func (s *shellAdapter) Start() error {
 	}
 }
 
-func (s *shellAdapter) Reply(msg gilibot.Message, message string) error {
+// Reply sends back an answer through the adapter
+func (s *Adapter) Reply(msg gilibot.Message, message string) error {
 
 	os.Stdout.WriteString(message + "\n")
 	return nil

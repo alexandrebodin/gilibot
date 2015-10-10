@@ -24,37 +24,3 @@ func (m *Matcher) HandleMessage(message Message) {
 		}
 	}
 }
-
-type Context struct {
-	Matches []string
-	Message Message
-	Bot     *Bot
-}
-
-func (c *Context) Reply(message string) {
-	c.Bot.Reply(c.Message, message)
-}
-
-// type MessageInterface interface {
-// 	Text() string
-// 	Channel() string
-// 	User() string
-// }
-
-type Message struct {
-	Channel string
-	User    string
-	Text    string
-}
-//
-// func (m *Message) Text() string {
-// 	return m.text
-// }
-//
-// func (m *Message) User() string {
-// 	return m.user
-// }
-//
-// func (m *Message) Channel() string {
-// 	return m.channel
-// }

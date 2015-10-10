@@ -1,20 +1,23 @@
 package slack
 
 import (
-	slack "github.com/alexandrebodin/slack_rtm"
-    "github.com/alexandrebodin/gilibot"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/alexandrebodin/gilibot"
+	slack "github.com/alexandrebodin/slack_rtm"
 )
 
-type slackAdapter struct {
+// Adapter defines a bot adpater to receive data from slack chat
+type Adapter struct {
 	bot    *gilibot.Bot
 	client *slack.SlackClient
 }
 
-func New(b *gilibot.Bot) *slackAdapter {
-	return &slackAdapter{bot: b}
+// New returns a new slack adapter
+func New(b *gilibot.Bot) *Adapter {
+	return &Adapter{bot: b}
 }
 
 type slackHandler struct {
@@ -32,7 +35,8 @@ func (h *slackHandler) OnMessage(c *slack.SlackContext, m *slack.MessageType) er
 	return nil
 }
 
-func (s *slackAdapter) Start() error {
+// Start starts slack adapter
+func (s *Adapter) Start() error {
 
 	token := os.Getenv("GILIBOT_SLACK_TOKEN")
 	if token == "" {
@@ -57,7 +61,8 @@ func (s *slackAdapter) Start() error {
 	return nil
 }
 
-func (s *slackAdapter) Reply(msg gilibot.Message, message string) error {
+// Reply send back and answer to slack
+func (s *Adapter) Reply(msg gilibot.Message, message string) error {
 
 	resp := slack.ResponseMessage{
 		Id:      "1",

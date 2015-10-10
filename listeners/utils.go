@@ -1,12 +1,15 @@
 package listeners
 
 import (
-	"github.com/alexandrebodin/gilibot"
 	"time"
+
+	"github.com/alexandrebodin/gilibot"
 )
 
+// UtilsListener defines a structure to hold a list of utility listeners
 type UtilsListener struct{}
 
+// GetHandlers Returns utility ListenerHandler
 func (u *UtilsListener) GetHandlers() []*gilibot.ListenerHandler {
 
 	return []*gilibot.ListenerHandler{

@@ -1,13 +1,15 @@
 package listeners
 
 import (
-	"github.com/alexandrebodin/gilibot"
 	"net/http"
 	"strings"
+
+	"github.com/alexandrebodin/gilibot"
 )
 
+// JenkinsListener defines parameters and handlers to send commands to jenkins
 type JenkinsListener struct {
-	BaseUri   string
+	BaseURI   string
 	uriSuffix string
 	username  string
 	apiToken  string
@@ -25,15 +27,17 @@ The commands are:
 Use "jenkins help [command]" for more information about a command.
 `
 
-func NewJenkinsListener(baseUri string, username string, apiToken string) *JenkinsListener {
+// NewJenkinsListener returns a new configured JenkinsListener
+func NewJenkinsListener(baseURI string, username string, apiToken string) *JenkinsListener {
 	return &JenkinsListener{
-		BaseUri:   baseUri,
+		BaseURI:   baseURI,
 		username:  username,
 		apiToken:  apiToken,
 		uriSuffix: "/api/json",
 	}
 }
 
+// GetHandlers Returns an array of ListenerHandler to add to the bot
 func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 
 	return []*gilibot.ListenerHandler{
@@ -50,7 +54,7 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 				//get parameters if any
 				jobName := c.Matches[1]
 				buildParameters := strings.TrimSpace(c.Matches[2])
-				url := jenkins.BaseUri + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix + "?" + buildParameters
+				url := jenkins.BaseURI + "/job/" + jobName + "/buildWithParameters" + jenkins.uriSuffix + "?" + buildParameters
 
 				req, err := http.NewRequest("POST", url, nil)
 				if err != nil {
@@ -69,9 +73,9 @@ func (jenkins *JenkinsListener) GetHandlers() []*gilibot.ListenerHandler {
 				if resp.StatusCode == 201 {
 					c.Reply("Deploy launched")
 					return
-				} else {
-					c.Reply("Deployment error")
 				}
+
+				c.Reply("Deployment error")
 			},
 		},
 	}
