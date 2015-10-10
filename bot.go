@@ -2,7 +2,6 @@ package gilibot
 
 import (
 	"errors"
-	"log"
 	"regexp"
 )
 
@@ -14,48 +13,30 @@ type Bot struct {
 }
 
 var (
-	errNoAdapterSet   = errors.New("No adapter set")
-	errInvalidAdapter = errors.New("Invalid adapter name")
+	errNoAdapterSet   = errors.New("You must add at least one adapter")
 )
 
 const (
-	defaultBotName     = "GiliBot"
-	defaultAdapterName = "shell"
+	defaultBotName    = "GiliBot"
 )
 
 func New(arguments ...string) *Bot {
 
-	var adapterName string
+	b := new(Bot)
+	b.listeners = []ListenerInterface{}
+	b.matcher =   &Matcher{Bot: b}
+
 	if len(arguments) > 0 {
-		adapterName = arguments[0]
+		b.Name = arguments[0]
 	} else {
-		adapterName = defaultAdapterName
+		b.Name = defaultBotName
 	}
 
-	b := &Bot{
-		Name:      defaultBotName,
-		listeners: []ListenerInterface{},
-		matcher:   &Matcher{},
-	}
-	b.matcher.Bot = b
-
-	err := b.initAdapter(adapterName)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return b
 }
 
-func (b *Bot) initAdapter(adapterName string) error {
-	switch adapterName {
-	case "shell":
-		b.Adapter = NewShellAdapter(b)
-	case "slack":
-		b.Adapter = NewSlackAdapter(b)
-	default:
-		return errInvalidAdapter
-	}
-	return nil
+func (b *Bot) AddAdapter(a AdapterInterface) {
+	b.Adapter = a
 }
 
 func (b *Bot) Start() error {
@@ -81,11 +62,11 @@ func (b *Bot) RegisterListener(l ListenerInterface) {
 	}
 }
 
-func (b *Bot) ReceiveMessage(message MessageInterface) {
+func (b *Bot) ReceiveMessage(message Message) {
 	b.matcher.HandleMessage(message)
 }
 
-func (b *Bot) Reply(m MessageInterface, message string) {
+func (b *Bot) Reply(m Message, message string) {
 
 	b.Adapter.Reply(m, message)
 }
